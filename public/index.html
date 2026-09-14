@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Codey — AI coding assistant</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-fx" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="bg-fx-overlay" aria-hidden="true"></div>
+
+  <!-- ===================== AUTH SCREEN ===================== -->
+  <section id="auth" class="auth-screen">
+    <div class="auth-card">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <h1 id="auth-heading">Welcome back</h1>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" data-mode="login" role="tab" aria-selected="true">Log in</button>
+        <button class="auth-tab" data-mode="signup" role="tab" aria-selected="false">Sign up</button>
+      </div>
+
+      <!-- Log in -->
+      <form id="login-form" class="auth-form" autocomplete="on">
+        <label class="field">
+          <span>Email</span>
+          <input type="email" id="login-email" required autocomplete="email" />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="login-password" required autocomplete="current-password" />
+        </label>
+        <p id="login-error" class="auth-error hidden" role="alert"></p>
+        <button type="submit" id="login-submit" class="primary-btn">Log in</button>
+      </form>
+
+      <!-- Sign up -->
+      <form id="signup-form" class="auth-form hidden" autocomplete="on">
+        <label class="field">
+          <span>Email</span>
+          <input type="email" id="signup-email" required autocomplete="email" />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="signup-password" required minlength="6" autocomplete="new-password" />
+        </label>
+        <label class="field">
+          <span>Confirm password</span>
+          <input type="password" id="signup-confirm" required minlength="6" autocomplete="new-password" />
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="agree-terms" />
+          <span>
+            I agree to the
+            <button type="button" id="open-terms" class="link-btn">Terms &amp; Conditions and Privacy Policy</button>
+          </span>
+        </label>
+
+        <label class="checkbox-row robot-row">
+          <input type="checkbox" id="not-robot" />
+          <span>I am not a robot</span>
+        </label>
+
+        <p id="signup-error" class="auth-error hidden" role="alert"></p>
+        <p id="signup-notice" class="auth-notice hidden" role="status"></p>
+
+        <button type="submit" id="signup-submit" class="primary-btn" disabled>Sign up</button>
+      </form>
+
+      <p class="auth-footnote">Your chats are saved to your account and synced with Supabase.</p>
+    </div>
+  </section>
+
+  <!-- ===================== TERMS & PRIVACY MODAL ===================== -->
+  <div id="terms-modal" class="modal-overlay hidden">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Terms and Privacy Policy">
+      <div class="modal-header">
+        <div class="modal-tabs">
+          <button class="modal-tab active" data-doc="terms">Terms &amp; Conditions</button>
+          <button class="modal-tab" data-doc="privacy">Privacy Policy</button>
+        </div>
+        <button id="close-terms" class="icon-action" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div id="terms-doc" class="legal-doc">
+          <p class="legal-disclaimer">
+            This is a general template provided for a student/demo project. It is not legal advice.
+            Replace the bracketed placeholders and have a qualified professional review it before
+            using this app with real users.
+          </p>
+          <h3>Terms &amp; Conditions</h3>
+          <p><em>Last updated: [Date]</em></p>
+
+          <h4>1. Acceptance of terms</h4>
+          <p>By creating an account or using Codey ("the App"), you agree to these Terms &amp; Conditions
+          and the accompanying Privacy Policy. If you do not agree, please do not use the App.</p>
+
+          <h4>2. What the App does</h4>
+          <p>Codey is a coding-assistant demo. When you send a message, your account and message are
+          stored so you can revisit past conversations, and your message is sent to an AI language model
+          (run either locally via Ollama or through a third-party AI provider, depending on configuration)
+          to generate a reply, which may include runnable code shown in a live preview.</p>
+
+          <h4>3. Accounts</h4>
+          <ul>
+            <li>You must provide an accurate email address to create an account.</li>
+            <li>You are responsible for keeping your password confidential and for all activity under your account.</li>
+            <li>You must be old enough to consent to use this App under the laws of [Your Country/State], or have a
+            parent/guardian's permission.</li>
+            <li>We may suspend or terminate accounts that violate these Terms.</li>
+          </ul>
+
+          <h4>4. Acceptable use</h4>
+          <p>You agree not to use the App to:</p>
+          <ul>
+            <li>Generate or distribute malicious code, malware, or content intended to attack or exploit systems without authorization.</li>
+            <li>Violate any applicable law, or the rights (including intellectual property rights) of others.</li>
+            <li>Upload or request content that is hateful, harassing, sexually explicit involving minors, or otherwise unlawful.</li>
+            <li>Attempt to disrupt, overload, or gain unauthorized access to the App or its infrastructure.</li>
+            <li>Automate account creation or bypass the sign-up verification steps.</li>
+          </ul>
+
+          <h4>5. Your content and generated code</h4>
+          <p>You retain ownership of the prompts and messages you write. Code generated by the AI model in
+          response to your prompts is provided "as is" — you are responsible for reviewing, testing, and
+          verifying any code before you use it elsewhere, including checking licensing of any third-party
+          snippets the model may reproduce. We do not guarantee that generated code is correct, secure, or
+          fit for any particular purpose.</p>
+
+          <h4>6. Third-party services</h4>
+          <p>The App relies on third-party infrastructure to operate, currently including Supabase (accounts
+          and data storage) and, depending on configuration, an AI provider (e.g., a locally run Ollama
+          model or a hosted API). Your use of the App is also subject to those providers' own terms where
+          applicable.</p>
+
+          <h4>7. Disclaimers</h4>
+          <p>THE APP IS PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR
+          IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE DO
+          NOT WARRANT THAT THE APP WILL BE UNINTERRUPTED, ERROR-FREE, OR SECURE.</p>
+
+          <h4>8. Limitation of liability</h4>
+          <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, [YOUR NAME/ORGANIZATION] WILL NOT BE LIABLE FOR ANY
+          INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING FROM YOUR USE OF THE APP OR ANY
+          CODE OR CONTENT IT GENERATES.</p>
+
+          <h4>9. Termination</h4>
+          <p>You may stop using the App and delete your account at any time. We may suspend or terminate
+          access if we reasonably believe you have violated these Terms.</p>
+
+          <h4>10. Changes to these terms</h4>
+          <p>We may update these Terms from time to time. Continued use of the App after changes take
+          effect constitutes acceptance of the updated Terms.</p>
+
+          <h4>11. Governing law</h4>
+          <p>These Terms are governed by the laws of [Your Country/State], without regard to its conflict
+          of laws principles.</p>
+
+          <h4>12. Contact</h4>
+          <p>Questions about these Terms can be sent to [contact email].</p>
+        </div>
+
+        <div id="privacy-doc" class="legal-doc hidden">
+          <p class="legal-disclaimer">
+            This is a general template provided for a student/demo project. It is not legal advice.
+            Replace the bracketed placeholders before using this app with real users, and confirm it
+            matches what the app actually does and which laws apply to you (e.g. GDPR, CCPA, Australian
+            Privacy Act).
+          </p>
+          <h3>Privacy Policy</h3>
+          <p><em>Last updated: [Date]</em></p>
+
+          <h4>1. What we collect</h4>
+          <ul>
+            <li><strong>Account information:</strong> the email address and password you provide at sign-up
+            (your password is stored as a secure hash by our authentication provider, Supabase — we never
+            see or store your plaintext password).</li>
+            <li><strong>Chat content:</strong> the messages you send and the AI-generated replies, so your
+            conversations can be saved and revisited.</li>
+            <li><strong>Basic technical data:</strong> timestamps of activity, and standard web server logs
+            (e.g. IP address, browser type) generated automatically by the hosting/auth infrastructure.</li>
+          </ul>
+          <p>We do not intentionally collect sensitive personal information (e.g. health, financial, or
+          government ID data), and you should avoid entering such information into chat messages.</p>
+
+          <h4>2. How we use your data</h4>
+          <ul>
+            <li>To create and secure your account, and let you log in.</li>
+            <li>To store and display your chat history so you can pick up past conversations.</li>
+            <li>To send your messages to the AI model in order to generate replies.</li>
+            <li>To maintain and improve the App (e.g. diagnosing errors).</li>
+          </ul>
+          <p>We do not sell your personal information.</p>
+
+          <h4>3. Who we share data with</h4>
+          <p>We use the following third-party processors to operate the App:</p>
+          <ul>
+            <li><strong>Supabase</strong> — hosts our database and handles authentication (account creation,
+            login, password storage).</li>
+            <li><strong>AI model provider</strong> — depending on how this instance is configured, your
+            messages may be processed by a locally run model (which never leaves the operator's own
+            machine) or by a third-party hosted AI API, solely to generate a response to your message.</li>
+          </ul>
+          <p>We do not share your data with advertisers, and we do not use your chats to train AI models
+          ourselves.</p>
+
+          <h4>4. Data retention</h4>
+          <p>We retain your account and chat history for as long as your account is active. You can delete
+          individual chats or your entire account at any time (see Section 6); deleted data is removed from
+          our active database, subject to any residual copies in routine backups, which are purged on a
+          rolling schedule.</p>
+
+          <h4>5. Security</h4>
+          <p>We rely on our infrastructure providers' security controls (encryption in transit via HTTPS,
+          access controls, and Row Level Security policies restricting each account to its own data). No
+          system is 100% secure, and we cannot guarantee absolute security of information you transmit.</p>
+
+          <h4>6. Your rights and choices</h4>
+          <ul>
+            <li>You can access and review your chat history at any time by logging in.</li>
+            <li>You can request correction of inaccurate account information.</li>
+            <li>You can request deletion of your account and associated data by contacting [contact email].</li>
+            <li>Depending on where you live, you may have additional rights under laws such as the GDPR,
+            CCPA, or the Australian Privacy Act — contact us to exercise them.</li>
+          </ul>
+
+          <h4>7. Cookies and local storage</h4>
+          <p>The App uses browser local storage (via our authentication provider) to keep you logged in
+          between visits. We do not use third-party advertising cookies or trackers.</p>
+
+          <h4>8. Children's privacy</h4>
+          <p>The App is not directed at children under 13 (or the minimum age in your jurisdiction) without
+          appropriate parental/guardian consent. If you believe a child has created an account without
+          appropriate consent, contact us so we can remove it.</p>
+
+          <h4>9. Changes to this policy</h4>
+          <p>We may update this Privacy Policy from time to time. We will update the "Last updated" date
+          above when we do.</p>
+
+          <h4>10. Contact</h4>
+          <p>Questions about this Privacy Policy, or requests to access/delete your data, can be sent to
+          [contact email].</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== LANDING SCREEN ===================== -->
+  <section id="landing" class="landing hidden">
+    <div class="landing-inner">
+      <button id="landing-history-btn" class="landing-history-btn" title="Chat history" aria-label="Chat history">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="brand-mark" aria-hidden="true"></div>
+      <h1 class="greeting">What can I help you build?</h1>
+
+      <form id="landing-form" class="input-bar" autocomplete="off">
+        <span class="bar-icon plus" aria-hidden="true">+</span>
+        <textarea
+          id="landing-input"
+          rows="1"
+          placeholder="Ask Codey to build something…"
+          aria-label="Message Codey"
+        ></textarea>
+        <div class="bar-right">
+          <span class="model-pill">
+            Codey
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <button type="submit" id="landing-send" class="send-btn" aria-label="Send" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <div class="suggestions">
+        <button class="chip" data-prompt="Build a responsive pricing page with three tiers and a toggle for monthly/yearly billing.">Pricing page</button>
+        <button class="chip" data-prompt="Build a client-side habit tracker with a grid of days and local streak counting.">Habit tracker</button>
+        <button class="chip" data-prompt="Build an interactive quiz app about world capitals with a running score.">Quiz app</button>
+        <button class="chip" data-prompt="Build a Pomodoro timer with start, pause, reset and a progress ring.">Pomodoro timer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CHAT + PREVIEW SCREEN ===================== -->
+  <section id="chatapp" class="chatapp hidden">
+
+    <button id="reopen-sidebar-btn" class="reopen-fab reopen-fab-left hidden" title="Show sidebar" aria-label="Show sidebar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+        <path d="M9 4v16" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-mark small" aria-hidden="true"></div>
+        <span class="brand-name">Codey</span>
+        <button id="sidebar-history-btn" class="icon-action" title="Chat history" aria-label="Chat history">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button id="collapse-sidebar-btn" class="icon-action" title="Close sidebar" aria-label="Close sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M9 4v16" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      </div>
+
+      <button id="new-chat-btn" class="new-chat-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>New chat</span>
+      </button>
+
+      <div id="messages" class="messages" role="log" aria-live="polite"></div>
+
+      <form id="chat-form" class="composer" autocomplete="off">
+        <textarea
+          id="chat-input"
+          rows="1"
+          placeholder="Ask a follow-up…"
+          aria-label="Message Codey"
+        ></textarea>
+        <div class="composer-controls">
+          <div class="model-pill-wrap">
+            <button type="button" id="model-pill-btn" class="model-pill-btn">
+              <span id="model-pill-label">qwen2.5-coder:7b</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div id="model-popover" class="model-popover hidden"></div>
+          </div>
+          <button type="submit" id="chat-send" class="send-btn" aria-label="Send" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <div class="sidebar-footer">
+        <span id="user-avatar" class="user-avatar">U</span>
+        <span id="user-email" class="user-email">Account</span>
+        <button id="sign-out-btn" class="icon-action" title="Sign out" aria-label="Sign out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <div id="chat-resizer" class="chat-resizer" title="Drag to resize"></div>
+
+    <main class="preview-pane">
+      <div class="preview-toolbar">
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="preview" role="tab" aria-selected="true">Preview</button>
+          <button class="tab" data-tab="code" role="tab" aria-selected="false">Code</button>
+        </div>
+        <div class="toolbar-actions">
+          <button id="hide-preview-btn" class="icon-action" title="Hide preview" aria-label="Hide preview">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M15 4v16" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+          <button id="refresh-preview" class="icon-action" title="Refresh preview" aria-label="Refresh preview">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 4v6h6M20 20v-6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 15a8 8 0 0014-4.5M19 9A8 8 0 005 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button id="open-preview" class="icon-action" title="Open in new tab" aria-label="Open in new tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M14 4h6v6M20 4l-9 9M19 13v5a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button id="download-btn" class="icon-action" title="Download" aria-label="Download">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="preview-body">
+        <iframe
+          id="preview-frame"
+          title="Live preview"
+          sandbox="allow-scripts allow-modals allow-forms allow-popups"
+        ></iframe>
+        <div id="empty-preview" class="empty-preview">
+          <p>Your build will appear here.</p>
+        </div>
+        <div id="code-panel" class="code-panel hidden">
+          <div id="code-files" class="code-files"></div>
+          <pre id="code-view" class="code-view"><code id="code-content"></code></pre>
+        </div>
+      </div>
+    </main>
+
+    <button id="reopen-preview-btn" class="reopen-fab reopen-fab-right hidden" title="Show preview" aria-label="Show preview">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+        <path d="M15 4v16" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </button>
+
+  </section>
+
+  <!-- ===================== CHAT HISTORY PANEL (available from landing + chat screens) ===================== -->
+  <div id="chats-panel" class="chats-panel hidden" role="dialog" aria-label="Chat history">
+    <div class="chats-panel-header">
+      <span>Chat history</span>
+      <button id="close-chats-panel-btn" class="icon-action" aria-label="Close chat history">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div id="chats-panel-list" class="chats-list"></div>
+  </div>
+
+  <!-- Supabase client (browser CDN build — no Node/npm involved) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="supabaseClient.js"></script>
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
